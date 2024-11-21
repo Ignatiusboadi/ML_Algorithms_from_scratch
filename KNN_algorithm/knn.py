@@ -135,5 +135,19 @@ class KNN:
         return predictions
     
     def check_accuracy(self, predictions, actual):
+        """
+        Calculates the accuracy of the predictions compared to the actual values.
+
+        Parameters:
+            predictions (np.ndarray): A 1D array of predicted labels or values.
+            actual (np.ndarray): A 1D array of true labels or values.
+
+        Returns:
+            str: The accuracy as a percentage formatted to two decimal places (e.g., "95.67").
+
+        Raises:
+            AssertionError: If `predictions` and `actual` do not have the same length.
+        """
+        assert predictions.shape[0] == actual.shape[0], 'predictions and actual vectors should have the same lengths.'
         return f"{np.mean(predictions == actual) * 100}:.2f"
     
