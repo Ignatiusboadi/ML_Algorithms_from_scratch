@@ -134,3 +134,6 @@ class KNN:
 
         return predictions
     
+    def check_accuracy(self, predictions, actual):
+        return f"{np.mean(predictions == actual) * 100}:.2f"
+    
