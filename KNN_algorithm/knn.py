@@ -134,7 +134,7 @@ class KNN:
 
         return predictions
     
-    def check_accuracy(self, predictions, actual):
+    def assess_model(self, predictions, actual):
         """
         Calculates the accuracy of the predictions compared to the actual values.
 
@@ -149,5 +149,10 @@ class KNN:
             AssertionError: If `predictions` and `actual` do not have the same length.
         """
         assert predictions.shape[0] == actual.shape[0], 'predictions and actual vectors should have the same lengths.'
-        return f"{np.mean(predictions == actual) * 100}:.2f"
+
+        if self.task == 'classification':
+            return f"Accuracy: {np.mean(predictions == actual) * 100}:.2f"
+        else:
+            r2_score = 1 - np.sum((predictions - actual) ** 2) / np.sum((actual - np.mean(actual)) ** 2)
+            return f"R2 Score: {r2_score:.4f}"
     
