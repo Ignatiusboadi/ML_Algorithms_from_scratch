@@ -40,3 +40,7 @@ class NaiveBayes:
         p_x_i = (np.exp(- (x_i - mean) ** 2 / (2 * var))) / (np.sqrt(2 * np.pi * var))
         return p_x_i
         
+    def check_accuracy(y_test, predictions):
+        n_correct = sum(y_test == predictions) / y_test.shape[0]
+
+        return f'Accuracy: {n_correct * 100:.2f}%'
