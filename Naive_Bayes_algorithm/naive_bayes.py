@@ -13,7 +13,7 @@ class NaiveBayes:
         self.var = np.zeros((n_classes, n_features), dtype=np.float64)
         self.priors = np.zeros(n_classes, dtype=np.float64)
 
-        for c in self._classes:
+        for c in self.classes:
             X_c = X[c == y]
             self.mean[c, :] = X_c.mean(axis=0)
             self.var[c, :] = X_c.var(axis=0)
@@ -40,7 +40,7 @@ class NaiveBayes:
         p_x_i = (np.exp(- (x_i - mean) ** 2 / (2 * var))) / (np.sqrt(2 * np.pi * var))
         return p_x_i
         
-    def check_accuracy(y_test, predictions):
-        n_correct = sum(y_test == predictions) / y_test.shape[0]
+    def check_accuracy(self, y_test, predictions):
+        accuracy = np.mean(y_test == predictions) * 100
 
-        return f'Accuracy: {n_correct * 100:.2f}%'
+        return f'Accuracy: {accuracy:.2f}%'
