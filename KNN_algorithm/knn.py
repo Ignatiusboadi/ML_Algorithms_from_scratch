@@ -151,8 +151,8 @@ class KNN:
         assert predictions.shape[0] == actual.shape[0], 'predictions and actual vectors should have the same lengths.'
 
         if self.task == 'classification':
-            return f"Accuracy: {np.mean(predictions == actual) * 100}:.2f"
+            return f"Accuracy: {np.mean(predictions == actual) * 100:.2f}"
         else:
-            r2_score = 1 - np.sum((predictions - actual) ** 2) / np.sum((actual - np.mean(actual)) ** 2)
+            r2_score = np.sum((predictions - actual) ** 2) / np.sum((actual - np.mean(actual)) ** 2)
             return f"R2 Score: {r2_score:.4f}"
     
