@@ -19,7 +19,7 @@ class Perceptron:
 
     def train(self):
         for i in range(self.n_iters):
-            for idx, x_i in enumerate(X):
+            for idx, x_i in enumerate(self.X):
                 output = self.predict(x_i)
                 update = self.lr * (self.y[idx] - output)
                 self.weights += update * x_i
