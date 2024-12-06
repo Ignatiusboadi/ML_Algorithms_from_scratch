@@ -19,23 +19,28 @@ class KNN:
         predict(X): Predicts the targets for multiple input samples.
     """
 
-    def __init__(self, k=3, task='classification'):
+    def __init__(self, k=3, task='classification', distance_measure='euclidean'):
         """
         Initializes the KNN instance.
 
         Parameters:
             k (int): The number of neighbors to consider for predictions. Must be greater than 0.
             task (str): The type of task - either 'classification' or 'regression'.
+            distance_measure: The type of measure to use for computing distances between points - euclidean, manhattan, hassanat.
 
         Raises:
             AssertionError: If `k` is not a positive integer.
             AssertionError: If `task` is not 'classification' or 'regression'.
+            AssertionError: if `distance_measure` is not euclidean or manhattan or hassanat.
         """
         assert isinstance(k, int) and k > 0, 'k should be an integer and greater than 0.'
         assert task in ['classification', 'regression'], "task should either be 'classification' or 'regression'."
+        assert distance_measure in ['euclidean', 'manhattan', 'hassanat'], "distance_measure should be one of euclidean, manhattan or hassanat."
 
         self.k = k
         self.task = task
+        distance_measures = {'euclidean': self.euclidean_distance, 'manhattan': self.manhattan_distance, 'hassanat': self.hassanat_distance}
+        self.distance_measure = distance_measures[distance_measure]
 
     def fit(self, X, y):
         """
@@ -69,13 +74,62 @@ class KNN:
 
         Raises:
             AssertionError: If `a` or `b` is not a numpy array.
+            AssertionError: If `b` is not a 2D array.
         """
         assert isinstance(a, np.ndarray), 'a should be a numpy array.'
         assert isinstance(b, np.ndarray), 'b should be a numpy array.'
+        assert b.ndim == 2, 'b should be a 2-dimensional array.'
 
-        distance = ((a - b) ** 2).sum(axis=1)
+        distance = ((a - b) ** 2).sum(axis=-1)
 
         return np.sqrt(distance)
+    
+    def manhattan_distance(self, a, b):
+        """
+        Computes the Manhattan distance between a single point and a set of points.
+
+        Parameters:
+            a (np.ndarray): A 1D array representing the single input point.
+            b (np.ndarray): A 2D array where each row is a point in the training set.
+
+        Returns:
+            np.ndarray: A 1D array of distances between `a` and each point in `b`.
+
+        Raises:
+            AssertionError: If `a` or `b` is not a numpy array.
+            AssertionError: If `b` is not a 2D array.
+        """
+        assert isinstance(a, np.ndarray), 'a should be a numpy array.'
+        assert isinstance(b, np.ndarray), 'b should be a numpy array.'
+        assert b.ndim == 2, 'b should be a 2-dimensional array.'
+        distance = (np.abs(a - b)).sum(axis=-1)
+
+        return distance
+    
+    def hassanat_distance(self, a, b):
+        """
+        Computes the Hassanat distance between a single point and a set of points. 
+        An implementation from the paper `On Enhancing The Performance Of Nearest Neighbour Classifiers Using Hassanat Distance Metric`
+
+        Parameters:
+            a (np.ndarray): A 1D array representing the single input point.
+            b (np.ndarray): A 2D array where each row is a point in the training set.
+
+        Returns:
+            np.ndarray: A 1D array of distances between `a` and each point in `b`.
+
+        Raises:
+            AssertionError: If `a` or `b` is not a numpy array.
+            AssertionError: If `b` is not a 2D array.
+        """
+
+        assert isinstance(a, np.ndarray), 'a should be a numpy array.'
+        assert isinstance(b, np.ndarray), 'b should be a numpy array.'
+        assert b.ndim == 2, 'b should be a 2-dimensional array.'
+
+        distance = np.where(np.minimum(a, b) >= 0, 1 - (1 + np.minimum(a, b)) / (1 + np.maximum(a, b)), 1 - (1 + np.minimum(a, b) + np.abs(np.minimum(a, b)))/(1 + np.maximum(a, b) + np.abs(np.minimum(a, b))))
+
+        return distance.sum(axis=-1)
 
     def predict_single(self, x_i):
         """
@@ -93,7 +147,8 @@ class KNN:
         assert hasattr(self, 'X') and hasattr(self, 'y'), "The model has not been fitted yet."
         assert type(x_i) == np.ndarray, 'x_i must be a numpy array.'
 
-        distances = self.euclidean_distance(x_i, self.X)
+
+        distances = self.distance_measure(x_i, self.X)
         sorted_distances = np.argsort(distances)
         topk_distances = sorted_distances[:self.k]
         topk_labels = self.y[topk_distances]
@@ -122,7 +177,7 @@ class KNN:
         assert hasattr(self, 'X') and hasattr(self, 'y'), "The model has not been fitted yet."
         assert X.ndim == 2, 'X should be a 2-dimensional array.'
 
-        distances = np.sqrt(((X[:, np.newaxis] - self.X) ** 2).sum(axis=2))
+        distances = self.distance_measure(X[:, np.newaxis], self.X) # np.sqrt(((X[:, np.newaxis] - self.X) ** 2).sum(axis=2))
 
         topk_indices = np.argsort(distances, axis=1)[:, :self.k]
         topk_labels = self.y[topk_indices]
