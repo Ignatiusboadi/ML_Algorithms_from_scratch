@@ -35,6 +35,19 @@ class Perceptron:
             np.ndarray: Binary outputs (0 or 1).
         """
         return np.where(x >= 0, 1, 0)
+    
+    def predict(self, X):
+        """
+        Predicts the binary class labels for the input samples.
+
+        Parameters:
+            X (np.ndarray): Input data of shape (n_samples, n_features) or a single sample of shape (n_features,).
+
+        Returns:
+            np.ndarray: Predicted binary labels (0 or 1) for each sample.
+        """
+        dot_output = np.dot(X, self.weights) + self.bias  # Linear combination of weights and inputs
+        return self.activation_func(dot_output)
 
     def fit(self, X, y):
         """
@@ -72,16 +85,3 @@ class Perceptron:
                     converged = False
             if converged:
                 break
-
-    def predict(self, X):
-        """
-        Predicts the binary class labels for the input samples.
-
-        Parameters:
-            X (np.ndarray): Input data of shape (n_samples, n_features) or a single sample of shape (n_features,).
-
-        Returns:
-            np.ndarray: Predicted binary labels (0 or 1) for each sample.
-        """
-        dot_output = np.dot(X, self.weights) + self.bias  # Linear combination of weights and inputs
-        return self.activation_func(dot_output)
