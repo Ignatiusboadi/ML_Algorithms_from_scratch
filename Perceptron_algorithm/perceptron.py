@@ -85,3 +85,6 @@ class Perceptron:
                     converged = False
             if converged:
                 break
+
+    def assess_model(self, predictions, actuals):
+        return f"Accuracy: {np.mean(predictions == actuals) * 100:.2f}"
