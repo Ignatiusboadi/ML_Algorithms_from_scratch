@@ -69,13 +69,37 @@ class KNN:
 
         Raises:
             AssertionError: If `a` or `b` is not a numpy array.
+            AssertionError: If `b` is not a 2D array.
         """
         assert isinstance(a, np.ndarray), 'a should be a numpy array.'
         assert isinstance(b, np.ndarray), 'b should be a numpy array.'
+        assert b.ndim == 2, 'b should be a 2-dimensional array.'
 
         distance = ((a - b) ** 2).sum(axis=1)
 
         return np.sqrt(distance)
+    
+    def manhattan_distance(self, a, b):
+        """
+        Computes the Manhattan distance between a single point and a set of points.
+
+        Parameters:
+            a (np.ndarray): A 1D array representing the single input point.
+            b (np.ndarray): A 2D array where each row is a point in the training set.
+
+        Returns:
+            np.ndarray: A 1D array of distances between `a` and each point in `b`.
+
+        Raises:
+            AssertionError: If `a` or `b` is not a numpy array.
+            AssertionError: If `b` is not a 2D array.
+        """
+        assert isinstance(a, np.ndarray), 'a should be a numpy array.'
+        assert isinstance(b, np.ndarray), 'b should be a numpy array.'
+        assert b.ndim == 2, 'b should be a 2-dimensional array.'
+        distance = (np.abs(a - b)).sum(axis=1)
+
+        return distance
 
     def predict_single(self, x_i):
         """
