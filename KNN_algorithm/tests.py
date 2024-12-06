@@ -1,12 +1,14 @@
 from sklearn.model_selection import train_test_split
 from sklearn import datasets, preprocessing
+from iinc import IINC
+from knn import KNN
+
 
 iris = datasets.load_iris()
 X, y = iris.data, iris.target
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-from knn import KNN
 iris_clf = KNN(k=5, task='classification')
 iris_clf.fit(X_train, y_train)
 predictions = iris_clf.predict(X_test)
@@ -21,6 +23,12 @@ iris_manhattan = KNN(k=5, task='classification', distance_measure='manhattan')
 iris_manhattan.fit(X_train, y_train)
 predictions = iris_manhattan.predict(X_test)
 print('manhattan', iris_manhattan.assess_model(predictions, y_test))
+
+iris_iinc = IINC(task='classification', distance_measure='manhattan')
+iris_iinc.fit(X_train, y_train)
+predictions = iris_iinc.predict(X_test)
+print('manhattan_iinc', iris_iinc.assess_model(predictions, y_test))
+
 
 housing = datasets.fetch_california_housing()
 H_train, H_test, p_train, p_test = train_test_split(housing.data, housing.target, test_size=0.8, random_state=32)
