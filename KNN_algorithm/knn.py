@@ -100,6 +100,31 @@ class KNN:
         distance = (np.abs(a - b)).sum(axis=1)
 
         return distance
+    
+    def hassanat_distance(self, a, b):
+        """
+        Computes the Hassanat distance between a single point and a set of points. 
+        An implementation from the paper `On Enhancing The Performance Of Nearest Neighbour Classifiers Using Hassanat Distance Metric`
+
+        Parameters:
+            a (np.ndarray): A 1D array representing the single input point.
+            b (np.ndarray): A 2D array where each row is a point in the training set.
+
+        Returns:
+            np.ndarray: A 1D array of distances between `a` and each point in `b`.
+
+        Raises:
+            AssertionError: If `a` or `b` is not a numpy array.
+            AssertionError: If `b` is not a 2D array.
+        """
+
+        assert isinstance(a, np.ndarray), 'a should be a numpy array.'
+        assert isinstance(b, np.ndarray), 'b should be a numpy array.'
+        assert b.ndim == 2, 'b should be a 2-dimensional array.'
+
+        distance = np.where(np.minimum(a, b) >= 0, 1 - (1 + np.minimum(a, b)) / (1 + np.maximum(a, b)), 1 - (1 + np.minimum(a, b) + np.abs(np.minimum(a, b)))/(1 + np.maximum(a, b) + np.abs(np.minimum(a, b))))
+
+        return distance.sum(axis=1)
 
     def predict_single(self, x_i):
         """
