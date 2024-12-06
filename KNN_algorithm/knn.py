@@ -107,7 +107,7 @@ class KNN:
             AssertionError: If `task` is not 'classification' or 'regression'.
             AssertionError: if `distance_measure` is not euclidean or manhattan or hassanat.
         """
-        assert isinstance(k, int) and k > 0, 'k should be an integer and greater than 0.'
+        assert isinstance(k, int) and k > 0, 'k should be an integer greater than 0.'
         assert task in ['classification', 'regression'], "task should either be 'classification' or 'regression'."
         assert distance_measure in ['euclidean', 'manhattan', 'hassanat'], "distance_measure should be one of euclidean, manhattan or hassanat."
 
