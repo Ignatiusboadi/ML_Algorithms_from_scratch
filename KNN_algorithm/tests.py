@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn import datasets, preprocessing
-from iinc import IINC
+from IINC import IINC
 from knn import KNN
 
 
