@@ -10,7 +10,17 @@ from knn import KNN
 iris_clf = KNN(k=5, task='classification')
 iris_clf.fit(X_train, y_train)
 predictions = iris_clf.predict(X_test)
-print(iris_clf.assess_model(predictions, y_test))
+print('euclidean', iris_clf.assess_model(predictions, y_test))
+
+iris_hassanat = KNN(k=5, task='classification', distance_measure='hassanat')
+iris_hassanat.fit(X_train, y_train)
+predictions = iris_hassanat.predict(X_test)
+print('hassanant', iris_hassanat.assess_model(predictions, y_test))
+
+iris_manhattan = KNN(k=5, task='classification', distance_measure='manhattan')
+iris_manhattan.fit(X_train, y_train)
+predictions = iris_manhattan.predict(X_test)
+print('manhattan', iris_manhattan.assess_model(predictions, y_test))
 
 housing = datasets.fetch_california_housing()
 H_train, H_test, p_train, p_test = train_test_split(housing.data, housing.target, test_size=0.8, random_state=32)

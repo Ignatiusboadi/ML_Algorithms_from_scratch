@@ -177,7 +177,7 @@ class KNN:
         assert hasattr(self, 'X') and hasattr(self, 'y'), "The model has not been fitted yet."
         assert X.ndim == 2, 'X should be a 2-dimensional array.'
 
-        distances = self.distance_measure(X[:, np.n], self.X) # np.sqrt(((X[:, np.newaxis] - self.X) ** 2).sum(axis=2))
+        distances = self.distance_measure(X[:, np.newaxis], self.X) # np.sqrt(((X[:, np.newaxis] - self.X) ** 2).sum(axis=2))
 
         topk_indices = np.argsort(distances, axis=1)[:, :self.k]
         topk_labels = self.y[topk_indices]
