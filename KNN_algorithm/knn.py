@@ -19,48 +19,6 @@ class KNN:
         predict(X): Predicts the targets for multiple input samples.
     """
 
-    def __init__(self, k=3, task='classification', distance_measure='euclidean'):
-        """
-        Initializes the KNN instance.
-
-        Parameters:
-            k (int): The number of neighbors to consider for predictions. Must be greater than 0.
-            task (str): The type of task - either 'classification' or 'regression'.
-            distance_measure: The type of measure to use for computing distances between points - euclidean, manhattan, hassanat.
-
-        Raises:
-            AssertionError: If `k` is not a positive integer.
-            AssertionError: If `task` is not 'classification' or 'regression'.
-            AssertionError: if `distance_measure` is not euclidean or manhattan or hassanat.
-        """
-        assert isinstance(k, int) and k > 0, 'k should be an integer and greater than 0.'
-        assert task in ['classification', 'regression'], "task should either be 'classification' or 'regression'."
-        assert distance_measure in ['euclidean', 'manhattan', 'hassanat'], "distance_measure should be one of euclidean, manhattan or hassanat."
-
-        self.k = k
-        self.task = task
-        distance_measures = {'euclidean': self.euclidean_distance, 'manhattan': self.manhattan_distance, 'hassanat': self.hassanat_distance}
-        self.distance_measure = distance_measures[distance_measure]
-
-    def fit(self, X, y):
-        """
-        Stores the training data.
-
-        Parameters:
-            X (np.ndarray): A 2D array of shape (n_samples, n_features) representing the training feature matrix.
-            y (np.ndarray): A 1D array of shape (n_samples,) representing the training labels or targets.
-
-        Raises:
-            AssertionError: If `X` is not a 2D array.
-            AssertionError: If the number of rows in `X` and `y` do not match.
-        """
-        assert X.ndim == 2, 'X should be a 2-dimensional array.'
-        assert y.shape[0] == X.shape[0], 'number of rows in targets/labels vector,y should match number of rows in feature matrix, X.'
-        assert self.k < X.shape[0], 'k should be less than the number of points in X.'
-
-        self.X = X
-        self.y = y
-
     def euclidean_distance(self, a, b):
         """
         Computes the Euclidean distance between a single point and a set of points.
@@ -127,9 +85,56 @@ class KNN:
         assert isinstance(b, np.ndarray), 'b should be a numpy array.'
         assert b.ndim == 2, 'b should be a 2-dimensional array.'
 
-        distance = np.where(np.minimum(a, b) >= 0, 1 - (1 + np.minimum(a, b)) / (1 + np.maximum(a, b)), 1 - (1 + np.minimum(a, b) + np.abs(np.minimum(a, b)))/(1 + np.maximum(a, b) + np.abs(np.minimum(a, b))))
+        distance = np.where(np.minimum(a, b) >= 0,
+                             1 - (1 + np.minimum(a, b)) / (1 + np.maximum(a, b)),
+                               1 - (1 + np.minimum(a, b) + np.abs(np.minimum(a, b)))/(1 + np.maximum(a, b) + np.abs(np.minimum(a, b))))
 
-        return distance.sum(axis=-1)
+        return distance.sum(axis=-1)    
+    
+    distance_measures = {'euclidean': euclidean_distance, 'manhattan': manhattan_distance, 'hassanat': hassanat_distance}
+
+    def __init__(self, k=3, task='classification', distance_measure='euclidean'):
+        """
+        Initializes the KNN instance.
+
+        Parameters:
+            k (int): The number of neighbors to consider for predictions. Must be greater than 0.
+            task (str): The type of task - either 'classification' or 'regression'.
+            distance_measure: The type of measure to use for computing distances between points - euclidean, manhattan, hassanat.
+
+        Raises:
+            AssertionError: If `k` is not a positive integer.
+            AssertionError: If `task` is not 'classification' or 'regression'.
+            AssertionError: if `distance_measure` is not euclidean or manhattan or hassanat.
+        """
+        assert isinstance(k, int) and k > 0, 'k should be an integer and greater than 0.'
+        assert task in ['classification', 'regression'], "task should either be 'classification' or 'regression'."
+        assert distance_measure in ['euclidean', 'manhattan', 'hassanat'], "distance_measure should be one of euclidean, manhattan or hassanat."
+
+        self.k = k
+        self.task = task
+        self.distance_measure = self.distance_measures[distance_measure].__get__(self)
+
+    def fit(self, X, y):
+        """
+        Stores the training data.
+
+        Parameters:
+            X (np.ndarray): A 2D array of shape (n_samples, n_features) representing the training feature matrix.
+            y (np.ndarray): A 1D array of shape (n_samples,) representing the training labels or targets.
+
+        Raises:
+            AssertionError: If `X` is not a 2D array.
+            AssertionError: If the number of rows in `X` and `y` do not match.
+        """
+        assert X.ndim == 2, 'X should be a 2-dimensional array.'
+        assert y.shape[0] == X.shape[0], 'number of rows in targets/labels vector,y should match number of rows in feature matrix, X.'
+        assert self.k < X.shape[0], 'k should be less than the number of points in X.'
+
+        self.X = X
+        self.y = y
+
+
 
     def predict_single(self, x_i):
         """
