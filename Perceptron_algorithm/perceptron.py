@@ -87,4 +87,20 @@ class Perceptron:
                 break
 
     def assess_model(self, predictions, actuals):
+        """
+        Evaluates the accuracy of model predictions against actual values.
+
+        Parameters:
+            predictions (array-like): Predicted labels (1D array, list, or Series).
+            actuals (array-like): True labels (1D array, list, or Series).
+
+        Returns:
+            string: Accuracy as a percentage (0 to 100) formatted to 2 decimal places.
+
+        Raises:
+            AssertionError: If inputs are not 1-dimensional or do not have the same length.
+            ValueError: If predictions and actuals contain incompatible data types.
+        """
+        assert predictions.ndim == actuals.ndim == 1, 'actuals must be 1-dimensional.'
+        assert predictions.shape[0] == actuals.shape[0], 'predictions should have the same number of rows as actuals.'
         return f"Accuracy: {np.mean(predictions == actuals) * 100:.2f}"
